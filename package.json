@@ -1,0 +1,19 @@
+{
+  "name": "disintegration",
+  "version": "1.0.0",
+  "description": "visualization experiment",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lyninx/disintegration.git"
+  },
+  "author": "lyninx",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lyninx/disintegration/issues"
+  },
+  "homepage": "https://github.com/lyninx/disintegration#readme"
+}

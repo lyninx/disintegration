@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack-dev-server -d --inline --hot"
+    "dev": "webpack-dev-server -d --inline --hot",
+    "build": "webpack --progress --hide-modules"
   },
   "repository": {
     "type": "git",

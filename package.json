@@ -26,7 +26,11 @@
     "webpack-glsl-loader": "^1.0.1"
   },
   "dependencies": {
+    "extract-svg-path": "^2.1.0",
+    "load-svg": "^1.0.0",
+    "svg-mesh-3d": "^1.1.0",
     "three": "^0.77.1",
+    "three-simplicial-complex": "^69.0.6",
     "tween.js": "^16.3.4"
   }
 }

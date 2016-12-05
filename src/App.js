@@ -1,5 +1,10 @@
 const NEAR = 0.1;
 const FAR = 2000;
+import three from 'three'
+const loadSvg = require('load-svg')
+const parsePath = require('extract-svg-path').parse
+const svgMesh = require('svg-mesh-3d')
+const createGeom = require('three-simplicial-complex')(THREE)
 
 export default class App {
     constructor() {
@@ -26,8 +31,8 @@ export default class App {
 
         this._scene = new THREE.Scene();
         const camera = this._camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, NEAR, FAR);
-        camera.position.y = 2;
-        camera.position.z = 16;
+        camera.position.y = 4;
+        camera.position.z = 32;
     }
 
     _createScene() {
@@ -36,14 +41,23 @@ export default class App {
         //scene.add(grid);
 
         //var geometry = new THREE.BoxGeometry(200, 200, 200);
-        this.wave.dimensions = [32, 32] // dimensions x, y
-        var geometry = new THREE.PlaneGeometry( 128, 128, this.wave.dimensions[0] , this.wave.dimensions[1] )
+        let dim = 16
+        this.wave.dimensions = [dim, dim] // dimensions x, y
+        var geometry = new THREE.PlaneGeometry( this.wave.dimensions[0]*4, this.wave.dimensions[1]*4, this.wave.dimensions[0] , this.wave.dimensions[1] )
         geometry.dynamic = true
         geometry.__dirtyVertices = true
         var material = new THREE.MeshBasicMaterial({
             color: 0x44ffdd,
             wireframeLinewidth: 2,
-            wireframe: true
+            wireframe: true,
+            side: THREE.DoubleSide
+        })
+        var material2 = new THREE.MeshBasicMaterial({
+            color: 0xffffff,
+            wireframeLinewidth: 1,
+            wireframe: false,
+            visible: true,
+            side: THREE.DoubleSide
         })
 
         var mesh = new THREE.Mesh(geometry, material)
@@ -51,6 +65,25 @@ export default class App {
         mesh.rotation.z += 1
         this.mesh = mesh
         scene.add(mesh)
+
+        this.svg_loaded = false
+        var self = this
+        loadSvg('lyninx.svg', function (err, svg) {
+          if (err) throw err
+
+          var svgPath = parsePath(svg)
+          var complex = svgMesh(svgPath, {
+            delaunay: false,
+            scale: 20
+          })
+          let geometry = new createGeom(complex)
+          let mesh = new THREE.Mesh(geometry, material2)
+          mesh.scale.set( 16, 16, 16 )
+          self.mesh2 = mesh
+          self.svg_loaded = true
+          mesh.position.y += 6
+          scene.add(mesh)
+        })
     }
     
     _render(timestamp) {
@@ -77,7 +110,9 @@ export default class App {
             elem.z = wave(elem.xi, elem.yi, offset)
         })
 
-        
+        if(this.svg_loaded){
+            this.mesh2.rotation.y += -0.001
+        }
         this.mesh.rotation.x += 0.0001
         this.mesh.rotation.z += 0.001
         this.mesh.geometry.verticesNeedUpdate = true

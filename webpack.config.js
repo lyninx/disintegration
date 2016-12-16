@@ -12,11 +12,8 @@ module.exports = {
     module: {
         loaders: [
             {
-                test: /\.glsl$/,
-                loader: 'webpack-glsl',
-                include: [
-                    path.resolve(__dirname, 'src', 'shaders')
-                ]
+                test: /\.(glsl|vs|fs)$/, 
+                loader: 'shader' 
             },
             {
                 test: /\.js$/,

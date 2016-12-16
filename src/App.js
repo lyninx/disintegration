@@ -1,9 +1,16 @@
-import three from 'three'
-const loadSvg = require('load-svg')
-const parsePath = require('extract-svg-path').parse
-const svgMesh = require('svg-mesh-3d')
-const createGeom = require('three-simplicial-complex')(THREE)
+const three         = require('three')
+const reindex       = require('mesh-reindex')
+const unindex       = require('unindex-mesh')
+const loadSvg       = require('load-svg')
+const parsePath     = require('extract-svg-path').parse
+const svgMesh       = require('svg-mesh-3d')
+const triangleCentroid = require('triangle-centroid')
+const createGeom    = require('three-simplicial-complex')(THREE)
 const orbitControls = require('three-orbit-controls')(THREE)
+const animate       = require('./Animate.js')
+
+const vertShader = require('./shaders/vertex.glsl')
+const fragShader = require('./shaders/fragment.glsl')
 
 const NEAR = 0.1;
 const FAR = 2000;
@@ -56,14 +63,28 @@ export default class App {
             wireframe: true,
             side: THREE.DoubleSide
         })
-        var material2 = new THREE.MeshBasicMaterial({
-            color: 0xffffff,
+        var material2 = new THREE.ShaderMaterial({
             wireframeLinewidth: 1,
+            vertexShader: vertShader,
+            fragmentShader: fragShader,
             wireframe: false,
             visible: true,
+            transparent: true,
+            side: THREE.DoubleSide,
+            uniforms: {
+                color: { value: new THREE.Color( 0xff2200 )},
+                opacity: { type: 'f', value: 1 },
+                scale: { type: 'f', value: 0 },
+                animate: { type: 'f', value: 0 }
+            }
+        })
+        var material3 = new THREE.MeshBasicMaterial({
+            color: 0x44ffdd,
+            wireframeLinewidth: 2,
+            wireframe: true,
             side: THREE.DoubleSide
         })
-
+        // waves mesh
         var mesh = new THREE.Mesh(geometry, material)
         mesh.rotation.x = Math.PI / 2
         mesh.rotation.z += 1
@@ -80,6 +101,7 @@ export default class App {
             delaunay: false,
             scale: 20
           })
+          complex = reindex(unindex(complex.positions, complex.cells))
           let geometry = new createGeom(complex)
           let mesh = new THREE.Mesh(geometry, material2)
           mesh.scale.set( 16, 16, 16 )
@@ -91,7 +113,7 @@ export default class App {
     }
     
     _render(timestamp) {
-        var wave = function(x, y, offset) {
+        let wave = function(x, y, offset) {
             return 0.5 * ( 0.4 * Math.sin((y / 16) + offset) + Math.sin((x / 2.3) + (-0.4 * offset))
                 + Math.sin((x / 4) + offset) + Math.sin((y / 2.8) + offset))
         }
@@ -99,7 +121,7 @@ export default class App {
         const scene = this._scene
         const camera = this._camera
         const renderer = this._renderer
-        var dimensions = this.wave.dimensions
+        const dimensions = this.wave.dimensions
         //console.log(timestamp)
         //this.mesh.geometry.__dirtyVertices = true;
         this.mesh.geometry.dynamic = true;
@@ -114,10 +136,7 @@ export default class App {
             elem.z = wave(elem.xi, elem.yi, offset)
         })
 
-        if(this.svg_loaded){
-            this.mesh2.rotation.y += -0.001
-        }
-        this.mesh.rotation.x += 0.0001
+        //this.mesh.rotation.x += 0.0001
         this.mesh.rotation.z += 0.001
         this.mesh.geometry.verticesNeedUpdate = true
         renderer.render(scene, camera)

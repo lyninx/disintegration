@@ -1,4 +1,7 @@
 import App from './App';
 
-var app = new App();
-app.start();
+document.addEventListener('DOMContentLoaded', function() {
+	console.log("DOM loaded")
+	var app = new App();
+	app.start();
+});

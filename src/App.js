@@ -1,18 +1,21 @@
-const NEAR = 0.1;
-const FAR = 2000;
 import three from 'three'
 const loadSvg = require('load-svg')
 const parsePath = require('extract-svg-path').parse
 const svgMesh = require('svg-mesh-3d')
 const createGeom = require('three-simplicial-complex')(THREE)
+const orbitControls = require('three-orbit-controls')(THREE)
+
+const NEAR = 0.1;
+const FAR = 2000;
 
 export default class App {
     constructor() {
-        this._bind('_render', '_handleResize');
-        this.wave = {};
-        this._setup3D();
-        this._createScene();
-        //window.addEventListener('resize', '_handleResize');
+        this._bind('_render', '_handleResize')
+        this.wave = {}
+        this._setup3D()
+        this._createScene()
+ 
+        window.addEventListener('resize', this._handleResize)
     }
 
     start() {
@@ -33,6 +36,7 @@ export default class App {
         const camera = this._camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, NEAR, FAR);
         camera.position.y = 4;
         camera.position.z = 32;
+        const controls = new orbitControls(camera)
     }
 
     _createScene() {

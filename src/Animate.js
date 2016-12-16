@@ -3,13 +3,28 @@ const tweenr = Tweenr({ defaultEase: 'expoOut' })
 
 let animate = {}
 
-animate.run = () => {
-
+animate.run = (material) => {
+	animate.implode(material)
 }
 
 animate.explode = (material, delay = 0) => {
-	tweenr.to(material.uniforms.scale, {
-    	delay: delay, value: 0, duration: 0.75, ease: 'expoIn'
+	tweenr.to(material.uniforms.animate, {
+		duration: 2.0, 
+		value: 0, 
+		delay: delay, 
+		ease: 'circOut'
+	}).on('complete', () => {
+		animate.run(material)
+  	})
+}
+animate.implode = (material, delay = 0) => {
+	tweenr.to(material.uniforms.animate, {
+		duration: 2.0, 
+		value: 1, 
+		delay: delay, 
+		ease: 'quadInOut'
+	}).on('complete', () => {
+		animate.explode(material, 2.0)
   	})
 }
 module.exports = animate

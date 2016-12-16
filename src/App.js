@@ -5,6 +5,7 @@ const loadSvg       = require('load-svg')
 const parsePath     = require('extract-svg-path').parse
 const svgMesh       = require('svg-mesh-3d')
 const triangleCentroid = require('triangle-centroid')
+const randomVec3    = require('gl-vec3').random
 const createGeom    = require('three-simplicial-complex')(THREE)
 const orbitControls = require('three-orbit-controls')(THREE)
 const animate       = require('./Animate.js')
@@ -63,21 +64,6 @@ export default class App {
             wireframe: true,
             side: THREE.DoubleSide
         })
-        var material2 = new THREE.ShaderMaterial({
-            wireframeLinewidth: 1,
-            vertexShader: vertShader,
-            fragmentShader: fragShader,
-            wireframe: false,
-            visible: true,
-            transparent: true,
-            side: THREE.DoubleSide,
-            uniforms: {
-                color: { value: new THREE.Color( 0xff2200 )},
-                opacity: { type: 'f', value: 1 },
-                scale: { type: 'f', value: 0 },
-                animate: { type: 'f', value: 0 }
-            }
-        })
         var material3 = new THREE.MeshBasicMaterial({
             color: 0x44ffdd,
             wireframeLinewidth: 2,
@@ -102,13 +88,39 @@ export default class App {
             scale: 20
           })
           complex = reindex(unindex(complex.positions, complex.cells))
-          let geometry = new createGeom(complex)
-          let mesh = new THREE.Mesh(geometry, material2)
-          mesh.scale.set( 16, 16, 16 )
-          self.mesh2 = mesh
-          self.svg_loaded = true
-          mesh.position.y += 6
-          scene.add(mesh)
+          // set up shader material
+            var material2 = new THREE.ShaderMaterial({
+                wireframeLinewidth: 1,
+                vertexShader: vertShader,
+                fragmentShader: fragShader,
+                wireframe: false,
+                visible: true,
+                transparent: true,
+                //attributes: attributes,
+                side: THREE.DoubleSide,
+                uniforms: {
+                    color: { value: new THREE.Color( 0xff2200 )},
+                    opacity: { type: 'f', value: 1 },
+                    scale: { type: 'f', value: 0 },
+                    animate: { type: 'f', value: 0.95 }
+                }
+            })
+            let svg_geometry = new createGeom(complex);
+            let buffer_geometry = new THREE.BufferGeometry().fromGeometry(svg_geometry)
+            let attributes = getAnimationAttributes(complex.positions, complex.cells)
+            buffer_geometry.addAttribute('direction', attributes.direction)
+            console.log(attributes)
+            buffer_geometry.addAttribute('centroid', attributes.centroid)          
+
+            svg_geometry.dispose();
+
+            let mesh = new THREE.Mesh(buffer_geometry, material2)
+            mesh.scale.set( 16, 16, 16 )
+            self.mesh2 = mesh
+            self.svg_loaded = true
+            mesh.position.y += 6
+            scene.add(mesh)
+            animate.run(material2)
         })
     }
     
@@ -152,4 +164,42 @@ export default class App {
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
     }
+}
+
+function getAnimationAttributes (positions, cells) {
+  const directions = new Float32Array(cells.length * 9)
+  const centroids = new Float32Array(cells.length * 9)
+  for (let i=0, i9=0; i<cells.length; i++, i9+=9) {
+    const [ f0, f1, f2 ] = cells[i]
+    const triangle = [ positions[f0], positions[f1], positions[f2] ]
+    const center = triangleCentroid(triangle)
+    //const dir = new THREE.Vector3().fromArray(center)
+    centroids[i9] = center[0]
+    centroids[i9+1] = center[1]
+    centroids[i9+2] = center[2]
+    centroids[i9+3] = center[0]
+    centroids[i9+4] = center[1]
+    centroids[i9+5] = center[2]
+    centroids[i9+6] = center[0]
+    centroids[i9+7] = center[1]
+    centroids[i9+8] = center[2]
+    
+    const random = randomVec3([], Math.random())
+    //const anim = new THREE.Vector3().fromArray(random)
+    directions[i9] = random[0]
+    directions[i9+1] = random[1]
+    directions[i9+2] = random[2]
+    directions[i9+3] = random[0]
+    directions[i9+4] = random[1]
+    directions[i9+5] = random[2]
+    directions[i9+6] = random[0]
+    directions[i9+7] = random[1]
+    directions[i9+8] = random[2]
+  }
+  return {
+    direction: new THREE.BufferAttribute( directions, 3 ),
+    centroid: new THREE.BufferAttribute( centroids, 3 )
+    // direction: { type: 'v3', value: directions },
+    // centroid: { type: 'v3', value: centroids }
+  }
 }

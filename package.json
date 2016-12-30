@@ -26,11 +26,15 @@
     "webpack-glsl-loader": "^1.0.1"
   },
   "dependencies": {
+    "css-loader": "^0.26.1",
     "extract-svg-path": "^2.1.0",
     "gl-vec3": "^1.0.3",
     "load-svg": "^1.0.0",
     "mesh-reindex": "^1.0.0",
+    "node-sass": "^4.1.1",
+    "sass-loader": "^4.1.1",
     "shader-loader": "^1.3.0",
+    "style-loader": "^0.13.1",
     "svg-mesh-3d": "^1.1.0",
     "three": "^0.83.0",
     "three-orbit-controls": "^82.1.0",

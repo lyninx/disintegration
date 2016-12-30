@@ -6,23 +6,25 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link href="https://fonts.googleapis.com/css?family=Nunito+Sans:400,700|Share+Tech+Mono" rel="stylesheet">
     <title>disintegration</title>
-    <style>
-        html, body {
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            overflow: hidden;
-            background-color: #000;
-            width: 100%;
-            height: 100%;
-        }
-    </style>
 </head>
 <body>
-<div>hello</div>
+    <header>
+        <div class="title">disintegration</div>
+        <div class="nav">
+            <!-- <button class="center" onClick="toggleControls()">expand</button> -->
+        </div>
+    </header>
+<!--     <div id="controls">
+        hello
+    </div>  -->
+    <div id="frame">
+        <div class="overlay">build v0.1.40<br>
+        > frame <div id="fps"></div>
+        </div>
+    </div>
+    <!--      -->
     <script src="bundle.js"></script>
 </body>
 </html>

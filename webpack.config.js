@@ -24,6 +24,10 @@ module.exports = {
                 query: {
                     presets: ['es2015']
                 }
+            },
+            {
+                test: /\.scss$/,
+                loader: 'style!css!sass?sourceMap'
             }
         ]
     },

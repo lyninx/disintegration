@@ -38,8 +38,9 @@ export default class App {
         const renderer = this._renderer = new THREE.WebGLRenderer({antialias: true});
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(window.devicePixelRatio);
-        document.body.appendChild(renderer.domElement);
-
+        renderer.setClearColor(0xe0e0e0);
+        document.getElementById("frame").appendChild(renderer.domElement);
+        this.fps = document.getElementById("fps");
         this._scene = new THREE.Scene();
         const camera = this._camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, NEAR, FAR);
         camera.position.y = 4;
@@ -59,7 +60,7 @@ export default class App {
         geometry.dynamic = true
         geometry.__dirtyVertices = true
         var material = new THREE.MeshBasicMaterial({
-            color: 0x44ffdd,
+            color: 0xff1111,
             wireframeLinewidth: 2,
             wireframe: true,
             side: THREE.DoubleSide
@@ -125,6 +126,7 @@ export default class App {
     }
     
     _render(timestamp) {
+        this.fps.textContent = Math.floor(timestamp);
         let wave = function(x, y, offset) {
             return 0.5 * ( 0.4 * Math.sin((y / 16) + offset) + Math.sin((x / 2.3) + (-0.4 * offset))
                 + Math.sin((x / 4) + offset) + Math.sin((y / 2.8) + offset))

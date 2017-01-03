@@ -12,16 +12,46 @@
 <body>
     <header>
         <div class="title">disintegration</div>
-        <div class="nav">
-            <!-- <button class="center" onClick="toggleControls()">expand</button> -->
-        </div>
+<!--         <div class="nav">
+            <button class="center">expand</button>
+        </div> -->
     </header>
 <!--     <div id="controls">
         hello
     </div>  -->
     <div id="frame">
-        <div class="overlay">build v0.1.40<br>
-        > frame <div id="fps"></div>
+        <div class="overlay">
+            <div class="main">
+                build v0.1.40<br>
+                > frame <div id="fps"></div>
+            </div>
+
+            <div class="controls">
+                <div class="content">
+                    <div class="icon">
+                            <svg height='60.0' width='60.0'onClick="toggleControls()">
+                                <circle cx="30" cy="30" r="18" stroke="#000" stroke-width="4" fill="none" />
+                                <path d='M 30.0 46.0 l 0 -8 
+                                        a 8, 8 0 0,0  8,-8
+                                        a 8, 8 0 0,0 -8,-8
+                                        a 8, 8 0 0,0 -8, 8
+                                        a 8, 8 0 0,0  8, 8
+                                        ' stroke='#000' stroke-width='4' fill='none'/>
+                            </svg>
+                    </div>
+                    <input placeholder="test"></input>
+                </div>             
+            </div>
+
+            <div id="bottom">
+                <div class="content">
+                    content appends here
+                    <button class="center" onClick="anim(0)">implode</button>
+                    <button class="center" onClick="anim(1)">explode</button>
+                    <input id="svg-input" type="file" onchange="loadSVG()">
+                    <div id="svg-preview"></div>
+                </div>
+            </div>
         </div>
     </div>
     <!--      -->

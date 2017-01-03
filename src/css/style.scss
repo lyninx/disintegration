@@ -11,6 +11,18 @@ body {
     font-family: 'Nunito Sans', sans-serif;
 }
 
+::-webkit-input-placeholder {
+   color: #444;
+}
+
+:-moz-placeholder { 
+   color: #444;  
+}
+
+::-moz-placeholder { 
+   color: #444;  
+}
+
 .center {
 	margin:auto;
 }
@@ -49,11 +61,74 @@ header {
 	font-size:24px;
 }
 
+#controls {
+	background:#000;
+	&.active {
+		height:100px;
+	}
+}
+
 #frame {
 	.overlay {
-		padding:15px;
+		display:flex;
+		flex-direction:column;
 		position:absolute;
+		width:100%;
+		height:calc(100% - 58px);
 		letter-spacing:1px;
+		.main {
+			margin:16px;
+			flex-grow:1;
+			width:100%;
+		}
+		.content {
+			margin:0 auto;
+			width:600px;
+			min-width: 400px;
+		}
+		.controls {
+			.content {
+				display:flex;
+			}
+			width:100%;
+			background:#fff;
+			height:60px;
+			.icon {
+				width:60px;
+				min-width:60px;
+				flex-basis:60px;
+				height:60px;
+				margin:0;
+			}
+			input {
+				width:90%;
+				margin:12px;
+				padding:6px 12px;
+				outline: none;
+				letter-spacing:0.5px;
+				background:rgba(0,0,0,0);
+				border:0;
+				border-bottom:4px solid #000;
+				color:#000;
+				font-size:16px;
+			}
+		}
+		#bottom {
+			transition:all 0.5s ease-in-out;
+			display:flex;
+			flex-wrap:wrap;
+			font-family: 'Nunito Sans', sans-serif;
+			background:rgba(255,255,255,0.8);
+			padding:0px 12px;
+			height:0px;
+			margin:auto;
+			width:inherit;
+			letter-spacing:0.5px;
+			&.active {
+				padding:12px;
+				height:200px;
+			}
+		}
 	}
 	#fps {
 		display:inline-block;

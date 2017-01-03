@@ -2,6 +2,8 @@ import App from './App'
 
 require('./css/style.scss')
 
+let controls = document.getElementById("bottom")
+
 document.addEventListener('DOMContentLoaded', function() {
 	console.log("DOM loaded")
 	var app = new App()
@@ -9,6 +11,5 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 window.toggleControls = function() {
-	console.log("yup")
-	document.getElementById("controls").classList.add('show');
+	controls.classList.toggle('active');
 }

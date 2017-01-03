@@ -13,9 +13,18 @@ animate.explode = (material, delay = 0) => {
 		value: 0, 
 		delay: delay, 
 		ease: 'circOut'
-	}).on('complete', () => {
-		animate.run(material)
-  	})
+	})
+	tweenr.to(material.uniforms.opacity, {
+		duration: 2.0, 
+		value: 0, 
+		delay: delay, 
+		ease: 'circOut'
+	})
+	tweenr.to(material.uniforms.scale, {
+		duration: 2.0, 
+		value: 0, 
+		delay: delay
+	})
 }
 animate.implode = (material, delay = 0) => {
 	tweenr.to(material.uniforms.animate, {
@@ -23,8 +32,17 @@ animate.implode = (material, delay = 0) => {
 		value: 1, 
 		delay: delay, 
 		ease: 'quadInOut'
-	}).on('complete', () => {
-		animate.explode(material, 2.0)
-  	})
+	})
+	tweenr.to(material.uniforms.opacity, {
+		duration: 2.0, 
+		value: 1, 
+		delay: delay, 
+		ease: 'quadIn'
+	})
+	tweenr.to(material.uniforms.scale, {
+		duration: 2.0, 
+		value: 1, 
+		delay: delay
+	})
 }
 module.exports = animate

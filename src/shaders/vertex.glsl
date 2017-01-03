@@ -6,13 +6,13 @@ uniform float opacity;
 uniform float color; //unused
 uniform float scale;
 
-#define PI 3.14
+#define PI 3.1415
 
 void main() {
   // rotate the triangles
   // each half rotates the opposite direction
-  //float theta = (1.0 - animate) * (PI * 1.5) * sign(centroid.x);
-  float theta = (1.0 - animate) * (PI * 1.5);
+  float theta = (1.0 - animate) * (PI * 1.5) * sign(centroid.x);
+  //float theta = (1.0 - animate) * (PI * 1.5);
   mat3 rotMat = mat3(
     vec3(cos(theta), 0.0, sin(theta)),
     vec3(0.0, 1.0, 0.0),
@@ -23,8 +23,8 @@ void main() {
   vec3 offset = mix(vec3(0.0), direction.xyz * rotMat, 1.0 - animate);
   
   // scale triangles to their centroids
-  //vec3 tPos = mix(centroid.xyz, position.xyz, scale) + offset;
-  vec3 tPos = mix(position.xyz, position.xyz, scale) + offset;
+  vec3 tPos = mix(centroid.xyz, position.xyz, scale) + offset;
+  //vec3 tPos = mix(position.xyz, position.xyz, scale) + offset;
   
   gl_Position = projectionMatrix * modelViewMatrix * vec4(tPos, 1.0);
   //gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );

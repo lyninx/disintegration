@@ -18,11 +18,15 @@ const FAR = 2000;
 
 export default class App {
     constructor() {
-        this._bind('_render', '_handleResize')
         this.wave = {}
+        this.primary = {}
+
+        this._bind('_render', '_handleResize', '_animate', '_loadSVG')
         this._setup3D()
         this._createScene()
  
+        window.anim = this._animate
+        window.loadSVG = this._loadSVG
         window.addEventListener('resize', this._handleResize)
     }
 
@@ -45,7 +49,7 @@ export default class App {
         const camera = this._camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, NEAR, FAR);
         camera.position.y = 4;
         camera.position.z = 32;
-        const controls = new orbitControls(camera)
+        //const controls = new orbitControls(camera)
     }
 
     _createScene() {
@@ -65,64 +69,32 @@ export default class App {
             wireframe: true,
             side: THREE.DoubleSide
         })
-        var material3 = new THREE.MeshBasicMaterial({
-            color: 0x44ffdd,
-            wireframeLinewidth: 2,
-            wireframe: true,
-            side: THREE.DoubleSide
+        var material2 = new THREE.ShaderMaterial({
+            wireframeLinewidth: 1,
+            vertexShader: vertShader,
+            fragmentShader: fragShader,
+            wireframe: false,
+            visible: true,
+            transparent: true,
+            //attributes: attributes,
+            side: THREE.DoubleSide,
+            uniforms: {
+                color: { value: new THREE.Color( 0xff2200 )},
+                opacity: { type: 'f', value: 1 },
+                scale: { type: 'f', value: 1 },
+                animate: { type: 'f', value: 0.95 }
+            }
         })
+        this.primary.material = material2;
+
         // waves mesh
         var mesh = new THREE.Mesh(geometry, material)
         mesh.rotation.x = Math.PI / 2
         mesh.rotation.z += 1
         this.mesh = mesh
         scene.add(mesh)
-
-        this.svg_loaded = false
-        var self = this
-        loadSvg('lyninx.svg', function (err, svg) {
-          if (err) throw err
-
-          var svgPath = parsePath(svg)
-          var complex = svgMesh(svgPath, {
-            delaunay: false,
-            scale: 20
-          })
-          complex = reindex(unindex(complex.positions, complex.cells))
-          // set up shader material
-            var material2 = new THREE.ShaderMaterial({
-                wireframeLinewidth: 1,
-                vertexShader: vertShader,
-                fragmentShader: fragShader,
-                wireframe: false,
-                visible: true,
-                transparent: true,
-                //attributes: attributes,
-                side: THREE.DoubleSide,
-                uniforms: {
-                    color: { value: new THREE.Color( 0xff2200 )},
-                    opacity: { type: 'f', value: 1 },
-                    scale: { type: 'f', value: 0 },
-                    animate: { type: 'f', value: 0.95 }
-                }
-            })
-            let svg_geometry = new createGeom(complex);
-            let buffer_geometry = new THREE.BufferGeometry().fromGeometry(svg_geometry)
-            let attributes = getAnimationAttributes(complex.positions, complex.cells)
-            buffer_geometry.addAttribute('direction', attributes.direction)
-            console.log(attributes)
-            buffer_geometry.addAttribute('centroid', attributes.centroid)          
-
-            svg_geometry.dispose();
-
-            let mesh = new THREE.Mesh(buffer_geometry, material2)
-            mesh.scale.set( 16, 16, 16 )
-            self.mesh2 = mesh
-            self.svg_loaded = true
-            mesh.position.y += 6
-            scene.add(mesh)
-            animate.run(material2)
-        })
+        ////////
+        this._loadSVG(true)
     }
     
     _render(timestamp) {
@@ -166,6 +138,57 @@ export default class App {
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
     }
+
+    _animate(seq) { 
+        switch(seq) {
+            case 0: animate.implode(this.primary.material); break;
+            case 1: animate.explode(this.primary.material); break;
+            default: animate.run(this.primary.material);
+        }
+    }
+    // load svg 
+    _loadSVG(init = false) {
+        var self = this
+        this.svg_loaded = false
+        if(init){
+            // load default SVG asychronously 
+            loadSvg('lyninx.svg', function (err, svg) {
+                if (err) throw err
+                load(svg)
+            })
+        } else {
+            let input = document.getElementById("svg-input");
+            var fReader = new FileReader();
+            fReader.readAsDataURL(input.files[0]);
+            fReader.onloadend = function(event){
+                console.log("loaded")
+                
+                let svg = atob(event.target.result.split(",")[1]);
+                // TODO: check if input is a valid SVG
+                document.getElementById("svg-preview").innerHTML = svg
+                load(svg)
+
+            }        
+        }
+        // load svg into scene
+        function load(svg){
+            let svgPath = parsePath(svg)
+            let complex = svgMesh(svgPath, { delaunay: false, scale: 20, randomization: 0 })
+            complex = reindex(unindex(complex.positions, complex.cells))
+            let svg_geometry = new createGeom(complex)
+            let buffer_geometry = new THREE.BufferGeometry().fromGeometry(svg_geometry)
+            let attributes = getAnimationAttributes(complex.positions, complex.cells)
+            buffer_geometry.addAttribute('direction', attributes.direction)
+            buffer_geometry.addAttribute('centroid', attributes.centroid)          
+            svg_geometry.dispose()
+            let mesh = new THREE.Mesh(buffer_geometry, self.primary.material)
+            mesh.scale.set( 16, 16, 16 )
+            self.mesh2 = mesh
+            self.svg_loaded = true
+            mesh.position.y += 6
+            self._scene.add(mesh)
+        }
+    }
 }
 
 function getAnimationAttributes (positions, cells) {
@@ -175,13 +198,14 @@ function getAnimationAttributes (positions, cells) {
     const [ f0, f1, f2 ] = cells[i]
     const triangle = [ positions[f0], positions[f1], positions[f2] ]
     const center = triangleCentroid(triangle)
-    //const dir = new THREE.Vector3().fromArray(center)
     centroids[i9] = center[0]
     centroids[i9+1] = center[1]
     centroids[i9+2] = center[2]
+
     centroids[i9+3] = center[0]
     centroids[i9+4] = center[1]
     centroids[i9+5] = center[2]
+
     centroids[i9+6] = center[0]
     centroids[i9+7] = center[1]
     centroids[i9+8] = center[2]
@@ -191,13 +215,16 @@ function getAnimationAttributes (positions, cells) {
     directions[i9] = random[0]
     directions[i9+1] = random[1]
     directions[i9+2] = random[2]
+
     directions[i9+3] = random[0]
     directions[i9+4] = random[1]
     directions[i9+5] = random[2]
+
     directions[i9+6] = random[0]
     directions[i9+7] = random[1]
     directions[i9+8] = random[2]
   }
+  console.log(centroids)
   return {
     direction: new THREE.BufferAttribute( directions, 3 ),
     centroid: new THREE.BufferAttribute( centroids, 3 )

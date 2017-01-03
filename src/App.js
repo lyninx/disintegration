@@ -166,6 +166,7 @@ export default class App {
                 let svg = atob(event.target.result.split(",")[1]);
                 // TODO: check if input is a valid SVG
                 document.getElementById("svg-preview").innerHTML = svg
+                clearSVG()
                 load(svg)
 
             }        
@@ -183,10 +184,14 @@ export default class App {
             svg_geometry.dispose()
             let mesh = new THREE.Mesh(buffer_geometry, self.primary.material)
             mesh.scale.set( 16, 16, 16 )
-            self.mesh2 = mesh
+            mesh.name = "primary"
             self.svg_loaded = true
             mesh.position.y += 6
             self._scene.add(mesh)
+            console.log()
+        }
+        function clearSVG(){
+            self._scene.remove(self._scene.children[1])
         }
     }
 }

@@ -20,7 +20,7 @@ export default class App {
     constructor() {
         this.wave = {}
         this.primary = {}
-
+        this.animation = {}
         this._bind('_render', '_handleResize', '_animate', '_loadSVG')
         this._setup3D()
         this._createScene()
@@ -44,6 +44,9 @@ export default class App {
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setClearColor(0xe0e0e0);
         document.getElementById("frame").appendChild(renderer.domElement);
+        this.animation.scrubber = document.getElementById("scrubber")
+        this.animation.scrubber.value = 0
+        this.animation.play = true
         this.fps = document.getElementById("fps");
         this._scene = new THREE.Scene();
         const camera = this._camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, NEAR, FAR);
@@ -53,8 +56,10 @@ export default class App {
     }
 
     _createScene() {
-        const scene = this._scene;
-        var grid = new THREE.GridHelper(1000, 5, 0x333333, 0x333333);
+        const scene = this._scene
+        var grid = new THREE.GridHelper(1000, 5, 0x333333, 0x333333)
+
+        this.animation.frame = 0
         //scene.add(grid);
 
         //var geometry = new THREE.BoxGeometry(200, 200, 200);
@@ -99,6 +104,14 @@ export default class App {
     
     _render(timestamp) {
         this.fps.textContent = Math.floor(timestamp);
+        if(this.animation.play) {
+            this.animation.frame = (parseInt(this.animation.scrubber.value) + 10) % 8192
+            this.animation.scrubber.value = this.animation.frame
+        } else {
+            this.animation.frame = parseInt(this.animation.scrubber.value)
+        }
+        animate.run(this.primary.material, this.animation.frame)
+
         let wave = function(x, y, offset) {
             return 0.5 * ( 0.4 * Math.sin((y / 16) + offset) + Math.sin((x / 2.3) + (-0.4 * offset))
                 + Math.sin((x / 4) + offset) + Math.sin((y / 2.8) + offset))
@@ -122,7 +135,6 @@ export default class App {
             elem.z = wave(elem.xi, elem.yi, offset)
         })
 
-        //this.mesh.rotation.x += 0.0001
         this.mesh.rotation.z += 0.001
         this.mesh.geometry.verticesNeedUpdate = true
         renderer.render(scene, camera)
@@ -143,7 +155,8 @@ export default class App {
         switch(seq) {
             case 0: animate.implode(this.primary.material); break;
             case 1: animate.explode(this.primary.material); break;
-            default: animate.run(this.primary.material);
+            case 2: this.animation.play = !this.animation.play; break;
+            default: console.log("reqired param")
         }
     }
     // load svg 

@@ -3,8 +3,9 @@ const tweenr = Tweenr({ defaultEase: 'expoOut' })
 
 let animate = {}
 
-animate.run = (material) => {
-	animate.implode(material)
+animate.run = (material, frame) => {
+	let state = frame / 8192
+	material.uniforms.animate = { type: "f", value: state }
 }
 
 animate.explode = (material, delay = 0) => {

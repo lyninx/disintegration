@@ -100,10 +100,10 @@ header {
 				height:60px;
 				margin:0;
 			}
-			input {
+			input[type=text] {
 				width:90%;
-				margin:12px;
-				padding:6px 12px;
+				margin:16px;
+				padding:0;
 				outline: none;
 				letter-spacing:0.5px;
 				background:rgba(0,0,0,0);
@@ -111,6 +111,45 @@ header {
 				border-bottom:4px solid #000;
 				color:#000;
 				font-size:16px;
+			}
+			input[type=range] {
+				outline: none;
+				-webkit-appearance: none; 
+				width: 100%; 
+				margin-top:20px;
+			}
+			input[type=range]::-webkit-slider-runnable-track {
+				width: 100%;
+				height: 4px;
+				background: none;
+				border-bottom:4px solid #000;
+			}
+			input[type=range]::-webkit-slider-thumb {
+				-webkit-appearance: none;
+				border-left: 10px solid transparent;
+				border-right: 10px solid transparent;
+				border-top: 16px solid #f00;
+				height: 18px;
+				width: 16px;
+				margin-top: -20px;
+			}
+			input[type=range]::-moz-range-thumb {
+				-webkit-appearance: none;
+				border-left: 10px solid transparent;
+				border-right: 10px solid transparent;
+				border-top: 16px solid #f00;
+				height: 18px;
+				width: 16px;
+				margin-top: -4px;
+			}
+			input[type=range]::-ms-thumb {
+				-webkit-appearance: none;
+				border-left: 10px solid transparent;
+				border-right: 10px solid transparent;
+				border-top: 16px solid #f00;
+				height: 18px;
+				width: 16px;
+				margin-top: -4px;
 			}
 		}
 		#bottom {

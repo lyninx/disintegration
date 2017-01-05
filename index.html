@@ -22,7 +22,7 @@
     <div id="frame">
         <div class="overlay">
             <div class="main">
-                build v0.1.40<br>
+                build v0.1.60<br>
                 > frame <div id="fps"></div>
             </div>
 
@@ -39,7 +39,8 @@
                                         ' stroke='#000' stroke-width='4' fill='none'/>
                             </svg>
                     </div>
-                    <input placeholder="test"></input>
+                    <!-- <input placeholder="test"></input> -->
+                    <input id="scrubber" type="range" min="0" max="8192"/>
                 </div>             
             </div>
 
@@ -48,6 +49,7 @@
                     content appends here
                     <button class="center" onClick="anim(0)">implode</button>
                     <button class="center" onClick="anim(1)">explode</button>
+                    <button class="center" onClick="anim(2)">play/pause</button><br>
                     <input id="svg-input" type="file" onchange="loadSVG()">
                     <div id="svg-preview"></div>
                 </div>

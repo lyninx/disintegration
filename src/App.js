@@ -52,7 +52,7 @@ export default class App {
         const camera = this._camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, NEAR, FAR);
         camera.position.y = 4;
         camera.position.z = 32;
-        //const controls = new orbitControls(camera)
+        const controls = new orbitControls(camera)
     }
 
     _createScene() {

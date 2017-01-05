@@ -1,7 +1,7 @@
 uniform float animate;
 uniform float opacity;
-//uniform float color;
+varying vec3 color;
 
 void main() {
-  gl_FragColor = vec4(vec3(1.0), opacity);
+  gl_FragColor = vec4(color, opacity);
 }

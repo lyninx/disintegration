@@ -67,7 +67,26 @@ header {
 		height:100px;
 	}
 }
-
+.timeline {
+	width:100%;
+	margin-top:16px;
+}
+#keyframes {
+	height:4px;
+	width:100%;
+	margin:0;
+	display:flex;
+	div {
+		flex-grow:1;
+		background:none;
+		&.active {
+			background:#f00;
+		}
+	}
+}
+#scubber {
+	margin:0;
+}
 #frame {
 	.overlay {
 		display:flex;
@@ -83,17 +102,23 @@ header {
 		}
 		.content {
 			margin:0 auto;
-			width:600px;
-			min-width: 400px;
+			width:1120px;
+			min-width: 600px;
 		}
 		.controls {
 			.content {
 				display:flex;
+				justify-content:space-between;
+				width:100%;
+				.timeline {
+					width:1120px;
+					flex-basis:1120px;
+				}
 			}
 			width:100%;
 			background:#fff;
 			height:60px;
-			.icon {
+			.icons {
 				width:60px;
 				min-width:60px;
 				flex-basis:60px;
@@ -116,6 +141,7 @@ header {
 				outline: none;
 				-webkit-appearance: none; 
 				width: 100%; 
+				margin:0px;
 				margin-top:20px;
 			}
 			input[type=range]::-webkit-slider-runnable-track {

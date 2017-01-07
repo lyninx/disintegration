@@ -1,49 +1,54 @@
 const Tweenr 	= require('tweenr')
 const tweenr = Tweenr({ defaultEase: 'expoOut' })
 
-let animate = {}
+export default class animate {
+	constructor(material, animation) {
+		this.duration = 2.0
+		this.animation = animation
+		this.material = material
+		this._bind('run', 'explode')
 
-animate.run = (material, frame) => {
-	let state = frame / 8192
-	material.uniforms.animate = { type: "f", value: state }
-}
+	}
+	run() {
+		switch(this.animation) {
+			case 0: this.explode(this.duration); break;
+			default: console.log("invalid animation set")
+		}
+	}
+	_bind(...methods) {
+		methods.forEach((method) => this[method] = this[method].bind(this));
+	}
 
-animate.explode = (material, delay = 0) => {
-	tweenr.to(material.uniforms.animate, {
-		duration: 2.0, 
-		value: 0, 
-		delay: delay, 
-		ease: 'circOut'
-	})
-	tweenr.to(material.uniforms.opacity, {
-		duration: 2.0, 
-		value: 0, 
-		delay: delay, 
-		ease: 'circOut'
-	})
-	tweenr.to(material.uniforms.scale, {
-		duration: 2.0, 
-		value: 0, 
-		delay: delay
-	})
+	// run(frame){
+	// 	let state = frame / 512
+	// 	//this.material.uniforms.animate = { type: "f", value: 1 - state }
+	// }
+
+	explode(dur, delay = 0){
+		tweenr.to(this.material.uniforms.animate, {
+			duration: dur, 
+			value: 0, 
+			delay: delay, 
+			ease: 'circOut'
+		})
+		tweenr.to(this.material.uniforms.scale, {
+			duration: dur, 
+			value: 0, 
+			delay: delay
+		})
+	}
+
+	implode(material, delay = 0) {
+		tweenr.to(material.uniforms.animate, {
+			duration: 2.0, 
+			value: 1, 
+			delay: delay, 
+			ease: 'quadInOut'
+		})
+		tweenr.to(material.uniforms.scale, {
+			duration: 2.0, 
+			value: 1, 
+			delay: delay
+		})
+	}
 }
-animate.implode = (material, delay = 0) => {
-	tweenr.to(material.uniforms.animate, {
-		duration: 2.0, 
-		value: 1, 
-		delay: delay, 
-		ease: 'quadInOut'
-	})
-	tweenr.to(material.uniforms.opacity, {
-		duration: 2.0, 
-		value: 1, 
-		delay: delay, 
-		ease: 'quadIn'
-	})
-	tweenr.to(material.uniforms.scale, {
-		duration: 2.0, 
-		value: 1, 
-		delay: delay
-	})
-}
-module.exports = animate

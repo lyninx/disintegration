@@ -13,7 +13,7 @@ varying vec3 color;
 void main() {
   // rotate the triangles
   // each half rotates the opposite direction
-  float swirl = 2.0;
+  float swirl = 1.0;
   float theta = (1.0 - animate) * (PI * swirl) * sign(centroid.x);
   //float theta = (1.0 - animate) * (PI * 1.5);
   mat3 rotMat = mat3(
@@ -27,8 +27,6 @@ void main() {
     vec3(0.0, sin(-2.0 * direction.y), cos(-2.0 * direction.y))
   );
   
-  // push outward
-  vec3 rotation = mix(vec3(0.0), direction.xyz * rotMat2, 1.0 - animate);
   vec3 offset = mix(vec3(0.0), direction.xyz * rotMat, 1.0 - animate);
   // scale triangles to their centroids
   vec3 tPos = mix(mix(centroid.xyz, position.xyz, scale), position.xyz * rotMat2, 1.0 - animate) + offset;

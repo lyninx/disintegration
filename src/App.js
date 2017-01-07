@@ -8,13 +8,14 @@ const triangleCentroid = require('triangle-centroid')
 const randomVec3    = require('gl-vec3').random
 const createGeom    = require('three-simplicial-complex')(THREE)
 const orbitControls = require('three-orbit-controls')(THREE)
-const animate       = require('./Animate.js')
+import animate from './Animate.js'
 
 const vertShader = require('./shaders/vertex.glsl')
 const fragShader = require('./shaders/fragment.glsl')
 
 const NEAR = 0.1;
 const FAR = 2000;
+const timeline_length = 256;
 
 export default class App {
     constructor() {
@@ -43,16 +44,29 @@ export default class App {
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setClearColor(0xe0e0e0);
-        document.getElementById("frame").appendChild(renderer.domElement);
-        this.animation.scrubber = document.getElementById("scrubber")
-        this.animation.scrubber.value = 0
-        this.animation.play = true
-        this.fps = document.getElementById("fps");
+
         this._scene = new THREE.Scene();
         const camera = this._camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, NEAR, FAR);
         camera.position.y = 4;
         camera.position.z = 32;
-        const controls = new orbitControls(camera)
+        //const controls = new orbitControls(camera)
+
+        // DOM setup
+        document.getElementById("frame").appendChild(renderer.domElement)
+        let keyframes = document.getElementById("keyframes")
+        for (let i=0; i<timeline_length; i++) {
+            let id = "frame-"+i
+            let div = document.createElement("div")
+            div.setAttribute("id", id);
+            keyframes.appendChild(div)
+        }
+        this.animation.scrubber = document.getElementById("scrubber")
+        this.animation.scrubber.value = 0
+        this.animation.play = true
+        this.animation.events = []
+        this.fps = document.getElementById("fps");
+        //document.getElementById("frame-4").classList.toggle('active');
+
     }
 
     _createScene() {
@@ -87,11 +101,11 @@ export default class App {
                 color: { value: new THREE.Color( 0xff2200 )},
                 opacity: { type: 'f', value: 1 },
                 scale: { type: 'f', value: 1 },
-                animate: { type: 'f', value: 0.95 }
+                animate: { type: 'f', value: 1 }
             }
         })
         this.primary.material = material2;
-
+        this.animation.events[100] = new animate(this.primary.material, 0)
         // waves mesh
         var mesh = new THREE.Mesh(geometry, material)
         mesh.rotation.x = Math.PI / 2
@@ -105,12 +119,16 @@ export default class App {
     _render(timestamp) {
         this.fps.textContent = Math.floor(timestamp);
         if(this.animation.play) {
-            this.animation.frame = (parseInt(this.animation.scrubber.value) + 10) % 8192
+            this.animation.frame = (parseInt(this.animation.scrubber.value) + 1) % 256
             this.animation.scrubber.value = this.animation.frame
+            let animation_event =this.animation.events[this.animation.frame]
+            if(animation_event){
+                animation_event.run()
+            }
         } else {
             this.animation.frame = parseInt(this.animation.scrubber.value)
         }
-        animate.run(this.primary.material, this.animation.frame)
+        //animate.run(this.primary.material, this.animation.frame)
 
         let wave = function(x, y, offset) {
             return 0.5 * ( 0.4 * Math.sin((y / 16) + offset) + Math.sin((x / 2.3) + (-0.4 * offset))
@@ -153,8 +171,8 @@ export default class App {
 
     _animate(seq) { 
         switch(seq) {
-            case 0: animate.implode(this.primary.material); break;
-            case 1: animate.explode(this.primary.material); break;
+            // case 0: animate.implode(this.primary.material); break;
+            // case 1: animate.explode(this.primary.material); break;
             case 2: this.animation.play = !this.animation.play; break;
             default: console.log("reqired param")
         }

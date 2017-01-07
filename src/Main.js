@@ -13,3 +13,5 @@ document.addEventListener('DOMContentLoaded', function() {
 window.toggleControls = function() {
 	controls.classList.toggle('active');
 }
+
+window.loadSVG

@@ -65,7 +65,6 @@ export default class App {
         this.animation.play = true
         this.animation.events = []
         this.fps = document.getElementById("fps");
-        //document.getElementById("frame-4").classList.toggle('active');
 
     }
 
@@ -106,6 +105,7 @@ export default class App {
         })
         this.primary.material = material2;
         this.animation.events[100] = new animate(this.primary.material, 0)
+        document.getElementById("frame-100").classList.toggle('active');
         // waves mesh
         var mesh = new THREE.Mesh(geometry, material)
         mesh.rotation.x = Math.PI / 2
@@ -121,6 +121,10 @@ export default class App {
         if(this.animation.play) {
             this.animation.frame = (parseInt(this.animation.scrubber.value) + 1) % 256
             this.animation.scrubber.value = this.animation.frame
+            if(this.animation.frame == 0){
+                this.primary.material.uniforms.animate = { type: 'f', value: 1 }
+                this.primary.material.uniforms.scale = { type: 'f', value: 1 }
+            }
             let animation_event =this.animation.events[this.animation.frame]
             if(animation_event){
                 animation_event.run()

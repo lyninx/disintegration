@@ -52,6 +52,7 @@ header {
 		flex-direction:row;
 	}
 	display:flex;
+	display:none;
 	flex-direction:row;
 	letter-spacing:0.5px;
 	height:34px;
@@ -93,7 +94,7 @@ header {
 		flex-direction:column;
 		position:absolute;
 		width:100%;
-		height:calc(100% - 58px);
+		height:calc(100% - 0px);
 		letter-spacing:1px;
 		.main {
 			margin:16px;
@@ -104,6 +105,13 @@ header {
 			margin:0 auto;
 			width:1120px;
 			min-width: 600px;
+			display:flex;
+			.l, .r {
+				margin: 6px;
+				padding:12px;
+				background:#fff;
+				flex-grow:1;
+			}
 		}
 		.controls {
 			.content {
@@ -111,6 +119,7 @@ header {
 				justify-content:space-between;
 				width:100%;
 				.timeline {
+					margin: 12px auto;
 					width:1120px;
 					flex-basis:1120px;
 				}
@@ -119,6 +128,7 @@ header {
 			background:#fff;
 			height:60px;
 			.icons {
+				position:absolute;
 				width:60px;
 				min-width:60px;
 				flex-basis:60px;
@@ -183,14 +193,14 @@ header {
 			display:flex;
 			flex-wrap:wrap;
 			font-family: 'Nunito Sans', sans-serif;
-			background:rgba(255,255,255,0.8);
-			padding:0px 12px;
+			background:rgba(220,220,220,0.8);
+			padding:0px;
 			height:0px;
 			margin:auto;
 			width:inherit;
 			letter-spacing:0.5px;
 			&.active {
-				padding:12px;
+				padding: 0px;
 				height:200px;
 			}
 		}

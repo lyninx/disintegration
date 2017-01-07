@@ -49,7 +49,8 @@ export default class App {
         const camera = this._camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, NEAR, FAR);
         camera.position.y = 4;
         camera.position.z = 32;
-        //const controls = new orbitControls(camera)
+        let vp = document.getElementById("viewport")
+        const controls = new orbitControls(camera, vp)
 
         // DOM setup
         document.getElementById("frame").appendChild(renderer.domElement)
@@ -65,6 +66,7 @@ export default class App {
         this.animation.play = true
         this.animation.events = []
         this.fps = document.getElementById("fps");
+        this.keyframe_panel = document.getElementById("keyframe-panel");
 
     }
 
@@ -73,6 +75,7 @@ export default class App {
         var grid = new THREE.GridHelper(1000, 5, 0x333333, 0x333333)
 
         this.animation.frame = 0
+        this.prev_frame = -1
         //scene.add(grid);
 
         //var geometry = new THREE.BoxGeometry(200, 200, 200);
@@ -118,6 +121,8 @@ export default class App {
     
     _render(timestamp) {
         this.fps.textContent = Math.floor(timestamp);
+        let animation_event = this.animation.events[this.animation.frame]
+
         if(this.animation.play) {
             this.animation.frame = (parseInt(this.animation.scrubber.value) + 1) % 256
             this.animation.scrubber.value = this.animation.frame
@@ -125,12 +130,20 @@ export default class App {
                 this.primary.material.uniforms.animate = { type: 'f', value: 1 }
                 this.primary.material.uniforms.scale = { type: 'f', value: 1 }
             }
-            let animation_event =this.animation.events[this.animation.frame]
             if(animation_event){
                 animation_event.run()
             }
         } else {
             this.animation.frame = parseInt(this.animation.scrubber.value)
+
+            if(animation_event){
+                if(this.prev_frame == this.animation.frame){
+
+                } else {
+                    this.prev_frame = this.animation.frame
+                    this.keyframe_panel.innerHTML = "animation number: " + animation_event.animation + "<br> duration: "+ animation_event.duration + "s"
+                }
+            }
         }
         //animate.run(this.primary.material, this.animation.frame)
 

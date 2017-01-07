@@ -21,7 +21,7 @@
     </div>  -->
     <div id="frame">
         <div class="overlay">
-            <div class="main">
+            <div class="main" id="viewport">
                 build v0.1.80<br>
                 > frame <div id="fps"></div>
             </div>
@@ -39,20 +39,24 @@
                     <input id="scrubber" type="range" min="0" max="256"/>
                     <div id="keyframes"></div>
                     </div>
-                    <div class="right">
-                    </div>
                 </div>             
             </div>
 
             <div id="bottom">
                 <div class="content">
-                    content appends here
-                    <button class="center" onClick="anim(0)">implode</button>
-                    <button class="center" onClick="anim(1)">explode</button>
-                    <button class="center" onClick="anim(2)">play/pause</button><br>
-                    <input id="svg-input" type="file" onchange="loadSVG()">
-                    <div id="svg-preview"></div>
-                    </input>
+                    <div class="l">
+                        <b>transport</b><br>
+                        <button class="center" onClick="anim(2)">play/pause</button><br>
+                        <br>
+                        <input id="svg-input" type="file" onchange="loadSVG()"></input>
+                        <!-- <div id="svg-preview"></div> -->
+                    </div>
+                    <div class="r">
+                        <b>keyframe editor</b>
+                        <div id="keyframe-panel">
+
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

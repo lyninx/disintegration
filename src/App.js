@@ -107,8 +107,8 @@ export default class App {
             }
         })
         this.primary.material = material2;
-        this.animation.events[100] = new animate(this.primary.material, 0)
-        document.getElementById("frame-100").classList.toggle('active');
+        this.animation.events[50] = new animate(this.primary.material, 0)
+        document.getElementById("frame-50").classList.toggle('active');
         // waves mesh
         var mesh = new THREE.Mesh(geometry, material)
         mesh.rotation.x = Math.PI / 2
@@ -143,6 +143,8 @@ export default class App {
                     this.prev_frame = this.animation.frame
                     this.keyframe_panel.innerHTML = "animation number: " + animation_event.animation + "<br> duration: "+ animation_event.duration + "s"
                 }
+            } else {
+                this.keyframe_panel.innerHTML = "animation number:<br> duration: "
             }
         }
         //animate.run(this.primary.material, this.animation.frame)

@@ -215,7 +215,7 @@ export default class App {
                 
                 let svg = atob(event.target.result.split(",")[1]);
                 // TODO: check if input is a valid SVG
-                document.getElementById("svg-preview").innerHTML = svg
+                //document.getElementById("svg-preview").innerHTML = svg
                 clearSVG()
                 load(svg)
 

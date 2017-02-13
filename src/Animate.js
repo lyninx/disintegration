@@ -1,7 +1,7 @@
 const Tweenr 	= require('tweenr')
 const tweenr = Tweenr({ defaultEase: 'expoOut' })
 
-export default class animate {
+export default class Animate {
 	constructor(material, animation) {
 		this.duration = 2.0
 		this.animation = animation
@@ -18,11 +18,6 @@ export default class animate {
 	_bind(...methods) {
 		methods.forEach((method) => this[method] = this[method].bind(this));
 	}
-
-	// run(frame){
-	// 	let state = frame / 512
-	// 	//this.material.uniforms.animate = { type: "f", value: 1 - state }
-	// }
 
 	explode(dur, delay = 0){
 		tweenr.to(this.material.uniforms.animate, {
